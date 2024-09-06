@@ -1,9 +1,9 @@
 package com.iman.bnpl.domain.bnpl.service
 
+import com.iman.bnpl.application.advice.NotFoundException
 import com.iman.bnpl.domain.bnpl.data.model.BnplEntity
 import com.iman.bnpl.domain.bnpl.data.repository.BnplRepository
 import org.springframework.stereotype.Service
-import kotlin.NoSuchElementException
 
 @Service
 class BnplService(private val bnplRepository: BnplRepository) {
@@ -17,14 +17,14 @@ class BnplService(private val bnplRepository: BnplRepository) {
     }
 
     fun getBnplById(id: String): BnplEntity {
-        return bnplRepository.findById(id).orElseThrow { NoSuchElementException("BNPL does not exist") }
+        return bnplRepository.findById(id).orElseThrow { NotFoundException("BNPL does not exist") }
     }
 
     fun updateBnpl(bnpl: BnplEntity): BnplEntity {
         if (bnplRepository.existsById(bnpl.id ?: "")) {
             return bnplRepository.save(bnpl)
         } else {
-            throw NoSuchElementException("BNPL does not exist")
+            throw NotFoundException("BNPL does not exist")
         }
     }
 
@@ -32,7 +32,7 @@ class BnplService(private val bnplRepository: BnplRepository) {
         if (bnplRepository.existsById(id)) {
             bnplRepository.deleteById(id)
         } else {
-            throw NoSuchElementException("BNPL does not exist")
+            throw NotFoundException("BNPL does not exist")
         }
     }
     
