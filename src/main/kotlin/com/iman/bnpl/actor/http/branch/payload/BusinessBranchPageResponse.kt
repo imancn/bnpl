@@ -23,9 +23,13 @@ data class BusinessBranchPageResponse(
     val images: List<ImageDto>?,
     val websiteInfo: LinkDto?,
     val workHours: WorkHoursDto?
-){
-    constructor(businessBranchEntity: BusinessBranchEntity, businessEntity: BusinessEntity, bnplList: List<BnplEntity>): this(
-        businessId = businessEntity.id,
+) {
+    constructor(
+        businessBranchEntity: BusinessBranchEntity,
+        businessEntity: BusinessEntity,
+        bnplList: List<BnplEntity>,
+        otherBranches: List<BusinessBranchEntity>
+    ) : this(businessId = businessEntity.id,
         businessBranchId = businessBranchEntity.id,
         businessName = businessEntity.name,
         businessBranchName = businessBranchEntity.name,
@@ -36,7 +40,9 @@ data class BusinessBranchPageResponse(
         category = businessEntity.category,
         address = businessBranchEntity.address?.let { AddressDto(it) } ?: businessEntity.address?.let { AddressDto(it) },
         phoneNumber = businessBranchEntity.phoneNumber ?: businessEntity.phoneNumber,
-        branches = null, //Todo: Must be implement later
+        branches = otherBranches.map {
+            BranchSummaryResponse(businessEntity, it)
+        },
         images = businessEntity.images?.let { it.map { image -> ImageDto(image) } },
         websiteInfo = businessEntity.websiteInfo?.let { LinkDto(it) },
         workHours = businessBranchEntity.workHours?.let{ WorkHoursDto(it) } ?: businessEntity.workHours?.let{ WorkHoursDto(it) }

@@ -41,6 +41,7 @@ class BusinessBranchService(
             NotFoundException("Business does not exist")
         }
         val bnplList = bnplService.getBnplsByIds(business.bnplIds)
-        return BusinessBranchPageResponse(businessBranch, business, bnplList)
+        val otherBranches = businessBranchRepository.findAll(PageRequest.of(0, 10)).toList()
+        return BusinessBranchPageResponse(businessBranch, business, bnplList, otherBranches)
     }
 }

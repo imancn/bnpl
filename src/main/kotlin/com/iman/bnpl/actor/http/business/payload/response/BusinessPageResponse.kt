@@ -4,6 +4,7 @@ import com.iman.bnpl.actor.shared.model.*
 import com.iman.bnpl.application.shared.enums.BusinessMode
 import com.iman.bnpl.application.shared.enums.Category
 import com.iman.bnpl.domain.bnpl.data.model.BnplEntity
+import com.iman.bnpl.domain.branch.data.model.BusinessBranchEntity
 import com.iman.bnpl.domain.business.data.model.BusinessEntity
 
 data class BusinessPageResponse(
@@ -21,7 +22,7 @@ data class BusinessPageResponse(
     val websiteInfo: LinkDto?,
     val workHours: WorkHoursDto?
 ){
-    constructor(businessEntity: BusinessEntity, bnplList: List<BnplEntity>): this(
+    constructor(businessEntity: BusinessEntity, bnplList: List<BnplEntity>, businessBranches: List<BusinessBranchEntity>): this(
         businessId = businessEntity.id,
         name = businessEntity.name,
         logo = businessEntity.logo?.let { ImageDto(it) },
@@ -31,7 +32,9 @@ data class BusinessPageResponse(
         category = businessEntity.category,
         address = businessEntity.address?.let { AddressDto(it) },
         phoneNumber = businessEntity.phoneNumber,
-        branches = null, //Todo: Must be implement later
+        branches = businessBranches.map {
+            BranchSummaryResponse(businessEntity, it)
+        },
         images = businessEntity.images?.let { it.map { image -> ImageDto(image) } },
         websiteInfo = businessEntity.websiteInfo?.let { LinkDto(it) },
         workHours = businessEntity.workHours?.let{ WorkHoursDto(it) }
