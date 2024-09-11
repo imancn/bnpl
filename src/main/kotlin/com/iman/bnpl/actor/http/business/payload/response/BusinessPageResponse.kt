@@ -22,7 +22,7 @@ data class BusinessPageResponse(
     val workHours: WorkHoursDto?
 ){
     constructor(businessEntity: BusinessEntity, bnplList: List<BnplEntity>): this(
-        businessId = businessEntity.businessId,
+        businessId = businessEntity.id,
         name = businessEntity.name,
         logo = businessEntity.logoUrl?.let { ImageDto(it) },
         thumbnail = businessEntity.thumbnailUrl?.let { ImageDto(it) },
