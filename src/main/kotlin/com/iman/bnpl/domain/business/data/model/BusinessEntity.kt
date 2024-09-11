@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 @TypeAlias("businesses")
 data class BusinessEntity(
     @Id
-    val businessId: String?,
+    val id: String?,
     val name: String,
     val logoUrl: Image?,
     val thumbnailUrl: Image?,
