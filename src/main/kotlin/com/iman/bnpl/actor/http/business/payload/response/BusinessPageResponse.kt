@@ -24,8 +24,8 @@ data class BusinessPageResponse(
     constructor(businessEntity: BusinessEntity, bnplList: List<BnplEntity>): this(
         businessId = businessEntity.id,
         name = businessEntity.name,
-        logo = businessEntity.logoUrl?.let { ImageDto(it) },
-        thumbnail = businessEntity.thumbnailUrl?.let { ImageDto(it) },
+        logo = businessEntity.logo?.let { ImageDto(it) },
+        thumbnail = businessEntity.thumbnail?.let { ImageDto(it) },
         businessModes = businessEntity.businessModes,
         bnplList = bnplList.map { BnplLogoDto(it) },
         category = businessEntity.category,

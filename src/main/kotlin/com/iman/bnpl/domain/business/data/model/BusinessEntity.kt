@@ -12,8 +12,8 @@ data class BusinessEntity(
     @Id
     val id: String?,
     val name: String,
-    val logoUrl: Image?,
-    val thumbnailUrl: Image?,
+    val logo: Image?,
+    val thumbnail: Image?,
     val businessModes: List<BusinessMode>,
     val bnplIds: List<String>,
     val category: Category,
