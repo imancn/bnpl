@@ -1,6 +1,7 @@
 package com.iman.bnpl.actor.http.business.controller
 
 import com.iman.bnpl.actor.http.business.payload.response.BusinessPageResponse
+import com.iman.bnpl.actor.http.business.payload.response.BusinessSearchItemResponse
 import com.iman.bnpl.actor.http.business.payload.response.BusinessSearchResponse
 import com.iman.bnpl.application.shared.enums.BusinessMode
 import com.iman.bnpl.domain.business.service.BusinessService
@@ -20,7 +21,7 @@ class BusinessController(private val businessService: BusinessService) {
         @RequestParam bnplIds: List<String>?,
         @RequestParam pageSize: Int?,
         @RequestParam pageNumber: Int?
-    ): Page<BusinessSearchResponse> {
+    ): BusinessSearchResponse {
         val pageable = PageRequest.of(pageNumber ?: 0, pageSize ?: 10)
         return businessService.searchBusinesses(categoryId, searchTerm, businessTypes, bnplIds, pageable)
     }
