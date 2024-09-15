@@ -72,11 +72,19 @@ class JwtService(
     }
     
     fun getClaims(token: String): Claims? {
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).body
+        return Jwts.parserBuilder()
+            .setSigningKey(jwtSecret)
+            .build()
+            .parseClaimsJws(token)
+            .body
     }
     
     fun getAuthoritiesFromJwtToken(token: String): List<SimpleGrantedAuthority> {
-        val claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).body
+        val claims = Jwts.parserBuilder()
+            .setSigningKey(jwtSecret)
+            .build()
+            .parseClaimsJws(token)
+            .body
         return claims.get("roles", List::class.java).map {
             SimpleGrantedAuthority(it.toString())
         }
