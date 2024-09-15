@@ -4,13 +4,13 @@ import com.iman.bnpl.actor.http.user.payload.response.JwtResponse
 import com.iman.bnpl.actor.http.user.payload.response.RefreshTokenResponse
 import com.iman.bnpl.application.advice.*
 import com.iman.bnpl.application.shared.util.Auth
-import com.iman.bnpl.domain.user.data.repository.OtpTokenRepository
 import com.iman.bnpl.domain.user.data.repository.UserRepository
 import com.iman.bnpl.application.security.service.JwtService
 import com.iman.bnpl.domain.user.services.RefreshTokenService
 import com.iman.bnpl.domain.user.data.model.Role
 import com.iman.bnpl.domain.user.data.model.UserDetailsImpl
 import com.iman.bnpl.domain.user.data.model.UserEntity
+import com.iman.bnpl.domain.user.services.OtpTokenService
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
@@ -29,12 +29,10 @@ class AuthController(
     val authenticationManager: AuthenticationManager,
     val userRepository: UserRepository,
     val refreshTokenService: RefreshTokenService,
-    val otpTokenRepository: OtpTokenRepository,
     val encoder: PasswordEncoder,
     val jwtService: JwtService,
+    private val otpTokenService: OtpTokenService,
 ) {
-//    @Todo: Move the logic to the service layer
-    
     @PostMapping("/sign-in/otp/verify")
     fun verifyOtpToSignInUser(
         @RequestParam @NotBlank @Pattern(regexp = "\\b9\\d{9}\\b\n") phoneNumber: String,
@@ -43,11 +41,7 @@ class AuthController(
         val user = userRepository.findByPhoneNumberAndDeleted(phoneNumber).orElseThrow {
             UnprocessableException("You are not registered")
         }
-        otpTokenRepository.findByUserId(user.id ?: "").let {
-            if (!it.isPresent || otp != it.get().token) {
-                throw AccessDeniedException("Invalid credentials")
-            }
-        }
+        otpTokenService.validateOtpTokenForLogin(user.id ?: "", otp)
         val authentication = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(user.id, null)
         )
@@ -64,10 +58,10 @@ class AuthController(
     fun requestOtpToSignInUserUser(
         @RequestParam @NotBlank @Pattern(regexp = "\\b9\\d{9}\\b\n") phoneNumber: String,
     ) {
-        userRepository.findByPhoneNumberAndDeleted(phoneNumber).orElseThrow {
+        val user = userRepository.findByPhoneNumberAndDeleted(phoneNumber).orElseThrow {
             UnprocessableException("You are not registered")
         }
-        sendOtp(phoneNumber)
+        otpTokenService.sendOtp(user.id ?: "", phoneNumber)
     }
     
     @PostMapping("/customer/signup")
@@ -78,23 +72,21 @@ class AuthController(
     ) {
         if (!Regex("\\b9\\d{9}\\b").containsMatchIn(phoneNumber))
             throw InvalidInputException("Invalid phone number")
-        val user = userRepository.findByPhoneNumberAndDeleted(phoneNumber)
-        if (!user.isPresent) {
-            userRepository.save(
-                UserEntity(
-                    id = null,
-                    fullName = fullName,
-                    phoneNumber = phoneNumber,
-                    password = password?.let{ encoder.encode(it) },
-                    roles = setOf(Role.ROLE_CUSTOMER)
+        val user = userRepository.findByPhoneNumberAndDeleted(phoneNumber).let {
+            if (!it.isPresent) {
+                userRepository.save(
+                    UserEntity(
+                        id = null,
+                        fullName = fullName,
+                        phoneNumber = phoneNumber,
+                        password = password?.let{ password -> encoder.encode(password) },
+                        roles = setOf(Role.ROLE_CUSTOMER)
+                    )
                 )
-            )
+            } else it.get()
         }
-        sendOtp(phoneNumber)
-    }
-    
-    private fun sendOtp(phoneNumber: String) {
-        TODO("Not yet implemented")
+        
+        otpTokenService.sendOtp(user.id ?: "", phoneNumber)
     }
     
     @PostMapping("/refresh-token")
@@ -112,7 +104,7 @@ class AuthController(
     }
 
     @PostMapping("/change-password")
-    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     fun changePassword(
         @RequestParam @Size(min = 6, max = 40) @NotBlank oldPassword: String,
         @RequestParam @Size(min = 6, max = 40) @NotBlank newPassword: String
