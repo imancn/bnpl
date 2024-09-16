@@ -30,7 +30,7 @@ class UserDetailsImpl(
     }
 
     override fun isAccountNonLocked(): Boolean {
-        return isDeleted
+        return isDeleted.not()
     }
 
     override fun isCredentialsNonExpired(): Boolean {

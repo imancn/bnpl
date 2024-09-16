@@ -33,9 +33,29 @@ class AuthController(
     val jwtService: JwtService,
     private val otpTokenService: OtpTokenService,
 ) {
+    @PostMapping("/sign-in")
+    fun signInUser(
+        @RequestParam @NotBlank @Pattern(regexp = "\\b9\\d{9}") phoneNumber: String,
+        @RequestParam @NotBlank password: String
+    ): JwtResponse {
+        val user = userRepository.findByPhoneNumberAndDeleted(phoneNumber).orElseThrow {
+            AccessDeniedException("Invalid credentials")
+        }
+        val authentication = authenticationManager.authenticate(
+            UsernamePasswordAuthenticationToken(user.id, password)
+        )
+        SecurityContextHolder.getContext().authentication = authentication
+        val jwt = jwtService.generateJwtToken(authentication.principal as UserDetailsImpl)
+        val userDetails = authentication.principal as UserDetailsImpl
+        val refreshToken = refreshTokenService.createRefreshToken(userDetails.id)
+        return JwtResponse(
+            jwt, refreshToken.id ?: "", userDetails.phoneNumber
+        )
+    }
+    
     @PostMapping("/sign-in/otp/verify")
     fun verifyOtpToSignInUser(
-        @RequestParam @NotBlank @Pattern(regexp = "\\b9\\d{9}\\b\n") phoneNumber: String,
+        @RequestParam @NotBlank @Pattern(regexp = "\\b9\\d{9}") phoneNumber: String,
         @RequestParam @NotBlank otp: String
     ): JwtResponse {
         val user = userRepository.findByPhoneNumberAndDeleted(phoneNumber).orElseThrow {
@@ -56,7 +76,7 @@ class AuthController(
     
     @PostMapping("/sign-in/otp/request")
     fun requestOtpToSignInUserUser(
-        @RequestParam @NotBlank @Pattern(regexp = "\\b9\\d{9}\\b\n") phoneNumber: String,
+        @RequestParam @NotBlank @Pattern(regexp = "\\b9\\d{9}") phoneNumber: String,
     ) {
         val user = userRepository.findByPhoneNumberAndDeleted(phoneNumber).orElseThrow {
             UnprocessableException("You are not registered")
@@ -67,10 +87,10 @@ class AuthController(
     @PostMapping("/customer/signup")
     fun registerStudent(
         @RequestParam @NotBlank fullName: String,
-        @RequestParam @NotBlank @Pattern(regexp = "\\b9\\d{9}\\b\n") phoneNumber: String,
+        @RequestParam @NotBlank @Pattern(regexp = "\\b9\\d{9}") phoneNumber: String,
         @RequestParam @Size(min = 6, max = 40) password: String?,
     ) {
-        if (!Regex("\\b9\\d{9}\\b").containsMatchIn(phoneNumber))
+        if (!Regex("\\b9\\d{9}").containsMatchIn(phoneNumber))
             throw InvalidInputException("Invalid phone number")
         val user = userRepository.findByPhoneNumberAndDeleted(phoneNumber).let {
             if (!it.isPresent) {
