@@ -17,6 +17,7 @@ import jakarta.validation.constraints.Size
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.validation.annotation.Validated
@@ -62,12 +63,14 @@ class AuthController(
             UnprocessableException("You are not registered")
         }
         otpTokenService.validateOtpTokenForLogin(user.id ?: "", otp)
-        val authentication = authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(user.id, null)
+        val userDetails = UserDetailsImpl(
+            user.id ?: "",
+            user.phoneNumber,
+            user.password,
+            user.roles.map { role -> SimpleGrantedAuthority(role.name)},
+            user.deleted
         )
-        SecurityContextHolder.getContext().authentication = authentication
-        val jwt = jwtService.generateJwtToken(authentication.principal as UserDetailsImpl)
-        val userDetails = authentication.principal as UserDetailsImpl
+        val jwt = jwtService.generateJwtToken(userDetails)
         val refreshToken = refreshTokenService.createRefreshToken(userDetails.id)
         return JwtResponse(
             jwt, refreshToken.id ?: "", userDetails.phoneNumber
