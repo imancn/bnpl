@@ -9,7 +9,7 @@ class SmsService(
     @Value("\${sms.api.key}") private val apiKey: String
 ) {
     fun sendVerificationCodeSms(otpToken: String, phoneNumber: String) {
-        val patternCode = "dbp82k0850mgtzd"
+        val patternCode = "ynq310ktkh49pgh"
         val request = SmsRequest(
             code = patternCode,
             sender = "+983000505",
