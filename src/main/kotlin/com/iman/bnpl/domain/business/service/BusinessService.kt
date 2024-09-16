@@ -7,7 +7,9 @@ import com.iman.bnpl.application.advice.NotFoundException
 import com.iman.bnpl.application.shared.enums.BusinessMode
 import com.iman.bnpl.domain.bnpl.service.BnplService
 import com.iman.bnpl.domain.branch.data.repository.BusinessBranchRepository
+import com.iman.bnpl.domain.business.data.model.BusinessEntity
 import com.iman.bnpl.domain.business.data.repository.BusinessRepository
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -34,6 +36,16 @@ class BusinessService(
             }
         )
     }
+    
+    fun getBusinesses(
+        categoryId: Long?,
+        searchTerm: String?,
+        businessTypes: List<BusinessMode>?,
+        bnplIds: List<String>?,
+        pageable: Pageable
+    ): Page<BusinessEntity> {
+        return businessRepository.searchBusinesses(categoryId, searchTerm, businessTypes, bnplIds, pageable)
+    }
 
     fun getBusinessById(businessId: String): BusinessPageResponse {
         val business = businessRepository.findById(businessId).orElseThrow {
@@ -42,5 +54,13 @@ class BusinessService(
         val bnplList = bnplService.getBnplsByIds(business.bnplIds)
         val businessBranches = businessBranchRepository.findAll(PageRequest.of(0, 10)).toList()
         return BusinessPageResponse(business, bnplList, businessBranches)
+    }
+    
+    fun saveOrUpdate(businessEntity: BusinessEntity) {
+        if (businessEntity.id != null && businessRepository.existsById(businessEntity.id ?: "")) {
+            businessRepository.save(businessEntity)
+        } else {
+            businessRepository.save(businessEntity.also { it.id = null })
+        }
     }
 }
