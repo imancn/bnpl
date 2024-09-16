@@ -7,10 +7,10 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("api/")
-class BusinessBranchController(private val businessBranchService: BusinessBranchService) {
+@RequestMapping("api/public/v1/business-branches/")
+class PublicBusinessBranchController(private val businessBranchService: BusinessBranchService) {
     
-    @GetMapping("/public/v1/business-branches")
+    @GetMapping
     fun searchBusinesses(
         @RequestParam businessId: String,
         @RequestParam searchTerm: String?,
@@ -21,7 +21,7 @@ class BusinessBranchController(private val businessBranchService: BusinessBranch
         return businessBranchService.searchBusinessBranches(businessId, searchTerm, pageable)
     }
     
-    @GetMapping("/public/v1/business-branches/{businessBranchId}")
+    @GetMapping("{businessBranchId}")
     fun getBusinessBranchById(@PathVariable businessBranchId: String): BusinessBranchPageResponse? {
         return businessBranchService.getBusinessBranchById(businessBranchId)
     }

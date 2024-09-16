@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository
 @Repository
 class CustomBusinessBranchRepositoryImpl(private val mongoTemplate: MongoTemplate) : CustomBusinessBranchRepository {
     
-    override fun searchBusinesses(
+    override fun searchBusinessBranches(
         businessId: String, searchTerm: String?, pageable: Pageable
     ): Page<BusinessBranchEntity> {
         val query = Query()

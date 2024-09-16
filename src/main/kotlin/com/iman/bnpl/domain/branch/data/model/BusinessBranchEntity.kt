@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class BusinessBranchEntity(
     @Id
     var id: String?,
-    var businessId: String?,
+    var businessId: String,
     var name: String,
     var address: Address?,
     var phoneNumber: String?,

@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 interface CustomBusinessBranchRepository {
-    fun searchBusinesses(
+    fun searchBusinessBranches(
         businessId: String, searchTerm: String?, pageable: Pageable
     ): Page<BusinessBranchEntity>
 }
