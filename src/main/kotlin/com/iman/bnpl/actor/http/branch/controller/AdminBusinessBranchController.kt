@@ -19,7 +19,7 @@ import java.io.*
 import java.nio.charset.StandardCharsets
 
 @RestController
-@RequestMapping("api/public/v1/business-branches/")
+@RequestMapping("api/admin/v1/business-branches/")
 class AdminBusinessBranchController(
     private val businessBranchService: BusinessBranchService,
 ) {

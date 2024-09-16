@@ -24,7 +24,7 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 
 @RestController
-@RequestMapping("api/public/v1/businesses/")
+@RequestMapping("api/admin/v1/businesses/")
 class AdminBusinessController(
     private val businessService: BusinessService,
 ) {
