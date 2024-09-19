@@ -156,8 +156,8 @@ class AdminBusinessController(
         val address = Address(
             record.get("address_full"),
             record.get("address_short"),
-            record.get("address_lat").toDouble(),
-            record.get("address_lng").toDouble()
+            record.get("address_lat")?.toDoubleOrNull(),
+            record.get("address_lng")?.toDoubleOrNull()
         )
         val images: List<Image>? = parseImages(record.get("images_urls_titles"))
         val websiteInfo = Link(record.get("websiteInfo_url"), record.get("websiteInfo_title"))
