@@ -50,7 +50,7 @@ class AdminBusinessBranchController(
                         branch.address?.short,
                         branch.address?.lat,
                         branch.address?.lng,
-                        branch.phoneNumber,
+                        branch.phoneNumbers,
                         branch.workHours?.from,
                         branch.workHours?.to
                     )
@@ -108,7 +108,7 @@ class AdminBusinessBranchController(
                 lat = record.get("address_lat").toDoubleOrNull(),
                 lng = record.get("address_lng").toDoubleOrNull()
             ),
-            phoneNumber = record.get("phoneNumber"),
+            phoneNumbers = record.get("phoneNumbers").split(";").map { it.trim() }.filter { it.matches(Regex("\\b9\\d{9}")) },
             workHours = WorkHours(
                 from = record.get("workHours_from"),
                 to = record.get("workHours_to")

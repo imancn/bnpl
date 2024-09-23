@@ -16,7 +16,7 @@ data class BusinessPageResponse(
     val bnplList: List<BnplLogoDto>,
     val category: Category?,
     val address: AddressDto?,
-    val phoneNumber: String?,
+    val phoneNumbers: List<String>?,
     val branches: List<BranchSummaryResponse>?,
     val images: List<ImageDto>?,
     val websiteInfo: LinkDto?,
@@ -31,7 +31,7 @@ data class BusinessPageResponse(
         bnplList = bnplList.map { BnplLogoDto(it) },
         category = businessEntity.category,
         address = businessEntity.address?.let { AddressDto(it) },
-        phoneNumber = businessEntity.phoneNumber,
+        phoneNumbers = businessEntity.phoneNumbers?.map { "+98".plus(it) },
         branches = businessBranches.map {
             BranchSummaryResponse(businessEntity, it)
         },

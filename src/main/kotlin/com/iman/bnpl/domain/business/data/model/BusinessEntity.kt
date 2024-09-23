@@ -18,7 +18,7 @@ data class BusinessEntity(
     var bnplIds: List<String>,
     var category: Category,
     var address: Address?,
-    var phoneNumber: String?,
+    var phoneNumbers: List<String>?,
     var images: List<Image>?,
     var websiteInfo: Link?,
     var workHours: WorkHours?

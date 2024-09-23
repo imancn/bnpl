@@ -14,6 +14,6 @@ data class BusinessBranchEntity(
     var businessId: String,
     var name: String,
     var address: Address?,
-    var phoneNumber: String?,
+    var phoneNumbers: List<String>?,
     var workHours: WorkHours?
 )
