@@ -2,6 +2,7 @@ package com.iman.bnpl.actor.http.business.controller
 
 import com.iman.bnpl.application.shared.enums.BusinessMode
 import com.iman.bnpl.application.shared.enums.Category
+import com.iman.bnpl.domain.bnpl.service.BnplService
 import com.iman.bnpl.domain.business.data.model.*
 import com.iman.bnpl.domain.business.service.BusinessService
 import org.apache.commons.csv.CSVFormat
@@ -27,6 +28,7 @@ import java.util.*
 @RequestMapping("api/admin/v1/businesses/")
 class AdminBusinessController(
     private val businessService: BusinessService,
+    private val bnplService: BnplService,
 ) {
     @GetMapping("/download-csv")
     fun downloadCSV(
@@ -151,7 +153,9 @@ class AdminBusinessController(
         val logo = Image(record.get("logo_url"), record.get("logo_title"))
         val thumbnail = Image(record.get("thumbnail_url"), record.get("thumbnail_title"))
         val businessModes = record.get("businessModes").split(";").map { BusinessMode.valueOf(it) }
-        val bnplIds: List<String> = record.get("bnplIds").split(";")
+        val bnplIds: List<String> = bnplService.findByOrders(
+            record.get("bnplIds").split(";").mapNotNull { it.toLongOrNull() }
+        ).mapNotNull { it.id }
         val category: Category = Category.valueOf(record.get("category").uppercase())
         val address = Address(
             record.get("address_full"),

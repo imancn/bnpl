@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service
 class BnplService(private val bnplRepository: BnplRepository) {
 
     fun createBnpl(bnpl: BnplEntity): BnplEntity {
-        return bnplRepository.save(bnpl)
+        return bnplRepository.save(bnpl.also { it.id = null })
     }
 
     fun getAllBnpls(): List<BnplEntity> {
-        return bnplRepository.findAll()
+        return bnplRepository.findAll().sortedBy { it.index }
     }
 
     fun getBnplById(id: String): BnplEntity {
@@ -38,5 +38,9 @@ class BnplService(private val bnplRepository: BnplRepository) {
     
     fun getBnplsByIds(bnplIds: List<String>): List<BnplEntity> {
         return bnplRepository.findAllById(bnplIds)
+    }
+    
+    fun findByOrders(indexes: List<Long>): List<BnplEntity> {
+        return bnplRepository.findByIndexIn(indexes)
     }
 }

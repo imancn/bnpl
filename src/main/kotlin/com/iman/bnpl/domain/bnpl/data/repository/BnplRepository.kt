@@ -5,4 +5,6 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface BnplRepository : MongoRepository<BnplEntity, String>
+interface BnplRepository : MongoRepository<BnplEntity, String> {
+    fun findByIndexIn(indexes: List<Long>): List<BnplEntity>
+}
