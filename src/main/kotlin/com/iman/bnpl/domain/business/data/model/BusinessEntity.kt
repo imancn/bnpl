@@ -1,7 +1,7 @@
 package com.iman.bnpl.domain.business.data.model
 
 import com.iman.bnpl.application.shared.enums.BusinessMode
-import com.iman.bnpl.application.shared.enums.Category
+import com.iman.bnpl.application.shared.enums.BusinessCategory
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.TypeAlias
 import org.springframework.data.mongodb.core.mapping.Document
@@ -16,7 +16,7 @@ data class BusinessEntity(
     var thumbnail: Image?,
     var businessModes: List<BusinessMode>,
     var bnplIds: List<String>,
-    var category: Category,
+    var category: BusinessCategory,
     var address: Address?,
     var phoneNumbers: List<String>?,
     var images: List<Image>?,

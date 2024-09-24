@@ -2,6 +2,7 @@ package com.iman.bnpl.domain.business.data.repository
 
 import com.iman.bnpl.domain.business.data.model.BusinessEntity
 import com.iman.bnpl.application.shared.enums.BusinessMode
+import com.iman.bnpl.application.shared.enums.BusinessCategory
 import org.springframework.stereotype.Repository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -14,7 +15,7 @@ import org.springframework.data.domain.PageImpl
 class CustomBusinessRepositoryImpl(private val mongoTemplate: MongoTemplate) : CustomBusinessRepository {
 
     override fun searchBusinesses(
-        categoryId: Long?,
+        category: BusinessCategory?,
         searchTerm: String?,
         businessTypes: List<BusinessMode>?,
         bnplIds: List<String>?,
@@ -22,7 +23,7 @@ class CustomBusinessRepositoryImpl(private val mongoTemplate: MongoTemplate) : C
     ): Page<BusinessEntity> {
         val query = Query()
 
-        categoryId?.let {
+        category?.let {
             query.addCriteria(Criteria.where("category").`is`(it))
         }
 

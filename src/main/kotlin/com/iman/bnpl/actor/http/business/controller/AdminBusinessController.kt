@@ -1,7 +1,7 @@
 package com.iman.bnpl.actor.http.business.controller
 
 import com.iman.bnpl.application.shared.enums.BusinessMode
-import com.iman.bnpl.application.shared.enums.Category
+import com.iman.bnpl.application.shared.enums.BusinessCategory
 import com.iman.bnpl.domain.bnpl.service.BnplService
 import com.iman.bnpl.domain.business.data.model.*
 import com.iman.bnpl.domain.business.service.BusinessService
@@ -32,7 +32,7 @@ class AdminBusinessController(
 ) {
     @GetMapping("/download-csv")
     fun downloadCSV(
-        @RequestParam categoryId: Long?,
+        @RequestParam category: BusinessCategory?,
         @RequestParam searchTerm: String?,
         @RequestParam businessTypes: List<BusinessMode>?,
         @RequestParam bnplIds: List<String>?,
@@ -41,7 +41,7 @@ class AdminBusinessController(
     ): ResponseEntity<InputStreamResource> {
         try {
             val pageable = PageRequest.of(pageNumber ?: 0, pageSize ?: 500)
-            val businesses = businessService.getBusinesses(categoryId, searchTerm, businessTypes, bnplIds, pageable)
+            val businesses = businessService.getBusinesses(category, searchTerm, businessTypes, bnplIds, pageable)
             
             val byteArrayOutputStream = ByteArrayOutputStream()
             OutputStreamWriter(byteArrayOutputStream, StandardCharsets.UTF_8).use { writer ->
@@ -156,7 +156,7 @@ class AdminBusinessController(
         val bnplIds: List<String> = bnplService.findByOrders(
             record.get("bnplIds").split(";").mapNotNull { it.toLongOrNull() }
         ).mapNotNull { it.id }
-        val category: Category = Category.valueOf(record.get("category").uppercase())
+        val category: BusinessCategory = BusinessCategory.valueOf(record.get("category").uppercase())
         val address = Address(
             record.get("address_full"),
             record.get("address_short"),

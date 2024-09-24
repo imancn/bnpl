@@ -5,6 +5,7 @@ import com.iman.bnpl.actor.http.business.payload.response.BusinessSearchItemResp
 import com.iman.bnpl.actor.http.business.payload.response.BusinessSearchResponse
 import com.iman.bnpl.application.advice.NotFoundException
 import com.iman.bnpl.application.shared.enums.BusinessMode
+import com.iman.bnpl.application.shared.enums.BusinessCategory
 import com.iman.bnpl.domain.bnpl.service.BnplService
 import com.iman.bnpl.domain.branch.data.repository.BusinessBranchRepository
 import com.iman.bnpl.domain.business.data.model.BusinessEntity
@@ -21,14 +22,14 @@ class BusinessService(
     private val businessBranchRepository: BusinessBranchRepository
 ) {
     fun searchBusinesses(
-        categoryId: Long?,
+        category: BusinessCategory?,
         searchTerm: String?,
         businessTypes: List<BusinessMode>?,
         bnplIds: List<String>?,
         pageable: Pageable
     ): BusinessSearchResponse {
         return BusinessSearchResponse(
-            businessRepository.searchBusinesses(categoryId, searchTerm, businessTypes, bnplIds, pageable).map {
+            businessRepository.searchBusinesses(category, searchTerm, businessTypes, bnplIds, pageable).map {
                 BusinessSearchItemResponse(
                     businessEntity = it,
                     bnplList = bnplService.getBnplsByIds(it.bnplIds)
@@ -38,13 +39,13 @@ class BusinessService(
     }
     
     fun getBusinesses(
-        categoryId: Long?,
+        category: BusinessCategory?,
         searchTerm: String?,
         businessTypes: List<BusinessMode>?,
         bnplIds: List<String>?,
         pageable: Pageable
     ): Page<BusinessEntity> {
-        return businessRepository.searchBusinesses(categoryId, searchTerm, businessTypes, bnplIds, pageable)
+        return businessRepository.searchBusinesses(category, searchTerm, businessTypes, bnplIds, pageable)
     }
 
     fun getBusinessById(businessId: String): BusinessPageResponse {

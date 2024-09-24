@@ -2,7 +2,7 @@ package com.iman.bnpl.actor.http.business.payload.response
 
 import com.iman.bnpl.actor.shared.model.*
 import com.iman.bnpl.application.shared.enums.BusinessMode
-import com.iman.bnpl.application.shared.enums.Category
+import com.iman.bnpl.application.shared.enums.BusinessCategory
 import com.iman.bnpl.domain.bnpl.data.model.BnplEntity
 import com.iman.bnpl.domain.branch.data.model.BusinessBranchEntity
 import com.iman.bnpl.domain.business.data.model.BusinessEntity
@@ -14,7 +14,7 @@ data class BusinessPageResponse(
     val thumbnail: ImageDto?,
     val businessModes: List<BusinessMode>,
     val bnplList: List<BnplLogoDto>,
-    val category: Category?,
+    val category: BusinessCategory?,
     val address: AddressDto?,
     val phoneNumbers: List<String>?,
     val branches: List<BranchSummaryResponse>?,
