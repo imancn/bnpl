@@ -37,7 +37,7 @@ class AdminBusinessBranchController(
             CSVPrinter(writer, CSVFormat.Builder.create()
                 .setHeader(
                     "id", "businessId", "name", "address_full", "address_short",
-                    "address_lat", "address_lng", "phoneNumber", "workHours_from", "workHours_to"
+                    "address_lat", "address_lng", "phoneNumbers", "workHours_from", "workHours_to"
                 )
                 .build()
             ).use { csvPrinter ->
@@ -66,7 +66,7 @@ class AdminBusinessBranchController(
             .body(inputStreamResource)
     }
     
-    @PostMapping("/upload-csv")
+    @PostMapping("/upload-csv", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun uploadCSV(@RequestParam("file") file: MultipartFile): ResponseEntity<String> {
         if (file.isEmpty) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please upload a valid CSV file.")
@@ -77,7 +77,7 @@ class AdminBusinessBranchController(
                 val csvFormat = CSVFormat.Builder.create()
                     .setHeader(
                         "id", "businessId", "name", "address_full", "address_short",
-                        "address_lat", "address_lng", "phoneNumber", "workHours_from", "workHours_to"
+                        "address_lat", "address_lng", "phoneNumbers", "workHours_from", "workHours_to"
                     )
                     .setSkipHeaderRecord(true)
                     .build()
@@ -108,7 +108,7 @@ class AdminBusinessBranchController(
                 lat = record.get("address_lat").toDoubleOrNull(),
                 lng = record.get("address_lng").toDoubleOrNull()
             ),
-            phoneNumbers = record.get("phoneNumbers").split(";").map { it.trim() }.filter { it.matches(Regex("\\b9\\d{9}")) },
+            phoneNumbers = record.get("phoneNumbers").split(";").map { it.trim() }.filter { it.matches(Regex("\\d{10}")) },
             workHours = WorkHours(
                 from = record.get("workHours_from"),
                 to = record.get("workHours_to")
