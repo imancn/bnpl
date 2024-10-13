@@ -5,5 +5,7 @@ enum class BusinessCategory {
     SUPER_MARKETS,
     ACCESSORIES,
     HOME_KITCHEN,
-    BEAUTY_HEALTH
+    BEAUTY_HEALTH,
+    DIGITAL,
+    OTHER
 }
