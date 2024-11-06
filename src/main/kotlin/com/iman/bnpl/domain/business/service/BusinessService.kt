@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class BusinessService(
-    private val businessRepository: BusinessRepository,
     private val bnplService: BnplService,
-    private val businessBranchRepository: BusinessBranchRepository
+    private val businessRepository: BusinessRepository,
+    private val businessBranchRepository: BusinessBranchRepository,
 ) {
     fun searchBusinesses(
         category: BusinessCategory?,
@@ -53,7 +53,9 @@ class BusinessService(
             NotFoundException("Business does not exist")
         }
         val bnplList = bnplService.getBnplsByIds(business.bnplIds)
-        val businessBranches = businessBranchRepository.findAll(PageRequest.of(0, 10)).toList()
+        val businessBranches = businessBranchRepository.searchBusinessBranches(
+            businessId, null, PageRequest.of(0, 10)
+        ).toList()
         return BusinessPageResponse(business, bnplList, businessBranches)
     }
     
