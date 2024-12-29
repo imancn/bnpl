@@ -1,10 +1,10 @@
 package com.iman.bnpl.application.advice
 
+import jakarta.validation.ConstraintViolationException
 import jakarta.validation.ValidationException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.http.converter.HttpMessageConversionException
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -19,7 +19,7 @@ class ControllerAdvice {
     fun handleHttpException(ex: HttpException, request: WebRequest): ResponseEntity<ErrorMessageResponse> {
         logger.error(ex.stackTraceToString())
         return ResponseEntity(
-            ErrorMessageResponse("${ex.message}"), ex.httpStatus
+            ErrorMessageResponse(ex.message ?: ""), ex.httpStatus
         )
     }
     
@@ -27,7 +27,7 @@ class ControllerAdvice {
     fun handleLogicalException(ex: LogicalException, request: WebRequest): ResponseEntity<ErrorMessageResponse> {
         logger.error(ex.stackTraceToString(), ex.message)
         return ResponseEntity(
-            ErrorMessageResponse("${ex.message}"), HttpStatus.INTERNAL_SERVER_ERROR
+            ErrorMessageResponse(ex.message ?: ""), HttpStatus.INTERNAL_SERVER_ERROR
         )
     }
     
@@ -37,27 +37,34 @@ class ControllerAdvice {
     }
     
     @ExceptionHandler(value = [MethodArgumentNotValidException::class])
-    fun handleValidationException(ex: MethodArgumentNotValidException, request: WebRequest): ResponseEntity<String> {
+    fun handleValidationException(ex: MethodArgumentNotValidException, request: WebRequest): ResponseEntity<ErrorMessageResponse> {
         return ResponseEntity(
-            ex.detailMessageArguments.toString(), HttpStatus.BAD_REQUEST
+            ErrorMessageResponse(ex.bindingResult.allErrors.first().defaultMessage ?: ex.message), HttpStatus.BAD_REQUEST
         )
     }
     
     @ExceptionHandler(value = [ValidationException::class])
-    fun handleValidationException(ex: ValidationException, request: WebRequest): ResponseEntity<String> {
+    fun handleValidationException(ex: ValidationException, request: WebRequest): ResponseEntity<ErrorMessageResponse> {
         return ResponseEntity(
-            ex.message, HttpStatus.BAD_REQUEST
+            ErrorMessageResponse(ex.message ?: ""), HttpStatus.BAD_REQUEST
         )
     }
     
-    // Todo: Remove after test
-    @ExceptionHandler(value = [HttpMessageConversionException::class])
+    @ExceptionHandler(value = [ConstraintViolationException::class])
+    fun handleConstraintViolationException(ex: ConstraintViolationException, request: WebRequest): ResponseEntity<ErrorMessageResponse> {
+        val message = (ex).constraintViolations.first().messageTemplate
+        return ResponseEntity(
+            ErrorMessageResponse(message), HttpStatus.BAD_REQUEST
+        )
+    }
+    
+    @ExceptionHandler(value = [HttpMessageNotReadableException::class])
     fun handleHttpMessageConversionException(
         ex: HttpMessageNotReadableException,
         request: WebRequest
-    ): ResponseEntity<String> {
+    ): ResponseEntity<ErrorMessageResponse> {
         return ResponseEntity(
-            ex.message, HttpStatus.BAD_REQUEST
+            ErrorMessageResponse("Malformed JSON body"), HttpStatus.BAD_REQUEST
         )
     }
 }
