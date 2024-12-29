@@ -1,4 +1,4 @@
-package com.iman.bnpl.actor.shared.model
+package com.iman.bnpl.actor.shared.model.dto
 
 import com.iman.bnpl.domain.business.data.model.Address
 

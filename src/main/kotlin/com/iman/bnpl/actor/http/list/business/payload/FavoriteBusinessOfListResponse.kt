@@ -1,6 +1,6 @@
 package com.iman.bnpl.actor.http.list.business.payload
 
-import com.iman.bnpl.actor.shared.model.BnplLogoDto
+import com.iman.bnpl.actor.shared.model.dto.BnplLogoDto
 import com.iman.bnpl.application.shared.enums.BusinessMode
 
 data class FavoriteBusinessOfListResponse(

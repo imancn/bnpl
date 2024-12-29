@@ -1,6 +1,6 @@
 package com.iman.bnpl.actor.http.business.payload.response
 
-import com.iman.bnpl.actor.shared.model.*
+import com.iman.bnpl.actor.shared.model.dto.*
 import com.iman.bnpl.application.shared.enums.BusinessMode
 import com.iman.bnpl.application.shared.enums.BusinessCategory
 import com.iman.bnpl.domain.bnpl.data.model.BnplEntity

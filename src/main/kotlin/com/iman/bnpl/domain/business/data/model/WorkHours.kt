@@ -1,6 +1,6 @@
 package com.iman.bnpl.domain.business.data.model
 
-import com.iman.bnpl.actor.shared.model.WorkHoursDto
+import com.iman.bnpl.actor.shared.model.dto.WorkHoursDto
 import com.iman.bnpl.application.advice.UnprocessableException
 
 data class WorkHours(

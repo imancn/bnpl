@@ -1,4 +1,4 @@
-package com.iman.bnpl.actor.shared.model
+package com.iman.bnpl.actor.shared.model.dto
 
 data class TimePeriodDto(val time: Int, val period: String) {
     fun convertTo24HoursFormat(): String {

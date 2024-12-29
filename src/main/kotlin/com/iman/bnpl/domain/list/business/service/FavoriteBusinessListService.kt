@@ -2,8 +2,8 @@ package com.iman.bnpl.domain.list.business.service
 
 import com.iman.bnpl.actor.http.list.business.payload.FavoriteBusinessOfListResponse
 import com.iman.bnpl.actor.http.list.business.payload.FavoriteBusinessListResponse
-import com.iman.bnpl.actor.shared.model.BnplLogoDto
-import com.iman.bnpl.actor.shared.model.ImageDto
+import com.iman.bnpl.actor.shared.model.dto.BnplLogoDto
+import com.iman.bnpl.actor.shared.model.dto.ImageDto
 import com.iman.bnpl.application.advice.AccessDeniedException
 import com.iman.bnpl.application.advice.NotFoundException
 import com.iman.bnpl.application.shared.util.Auth

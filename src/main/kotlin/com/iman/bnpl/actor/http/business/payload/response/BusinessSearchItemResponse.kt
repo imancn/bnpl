@@ -1,7 +1,7 @@
 package com.iman.bnpl.actor.http.business.payload.response
 
-import com.iman.bnpl.actor.shared.model.BnplLogoDto
-import com.iman.bnpl.actor.shared.model.ImageDto
+import com.iman.bnpl.actor.shared.model.dto.BnplLogoDto
+import com.iman.bnpl.actor.shared.model.dto.ImageDto
 import com.iman.bnpl.domain.business.data.model.BusinessEntity
 import com.iman.bnpl.application.shared.enums.BusinessMode
 import com.iman.bnpl.domain.bnpl.data.model.BnplEntity
