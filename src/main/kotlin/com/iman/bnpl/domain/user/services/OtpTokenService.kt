@@ -13,6 +13,7 @@ class OtpTokenService(
     private val smsService: SmsService
 ) {
     fun sendOtp(userId: String, phoneNumber: String) {
+        otpTokenRepository.deleteByUserIdAndType(userId, OtpType.LOGIN)
         val otpToken = otpTokenRepository.save(
             OtpTokenEntity(
                 userId = userId,

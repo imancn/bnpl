@@ -27,8 +27,8 @@ data class OtpTokenEntity(
 
     companion object {
         private fun makeRandom6DigitsToken(): String {
-            val digit = Random().nextInt(899_999) + 100_000
-            return String.format("%06d", digit)
+            val digit = Random().nextInt(899_99) + 10_000
+            return String.format("%05d", digit)
         }
 
         private fun calculateExpiryDate(type: OtpType): Date {
