@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class UserEntity(
     @Id
     var id: String?,
-    var fullName: String?,
+    var fullName: String,
     var phoneNumber: String,
     var password: String?,
     var roles: Set<Role> = HashSet(),
