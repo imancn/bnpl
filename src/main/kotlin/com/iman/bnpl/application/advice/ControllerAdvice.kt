@@ -52,7 +52,7 @@ class ControllerAdvice {
         request: WebRequest
     ): ResponseEntity<ErrorMessageResponse> {
         return ResponseEntity(
-            ErrorMessageResponse("malformed.json.body", "Malformed JSON body"), HttpStatus.BAD_REQUEST
+            ErrorMessageResponse("auto.validations", "Malformed JSON body"), HttpStatus.BAD_REQUEST
         )
     }
 }

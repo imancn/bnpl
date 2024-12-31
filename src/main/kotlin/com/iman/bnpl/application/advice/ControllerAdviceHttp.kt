@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.WebRequest
+import java.text.MessageFormat
 import java.util.*
 
 @RestControllerAdvice
@@ -42,8 +43,8 @@ class ControllerAdviceHttp(
         return getErrorMessageResponse(ex, "internal.server.error")
     }
     
-    private fun getErrorMessageResponse(ex: HttpException, defaultKey: String = "error"): ResponseEntity<ErrorMessageResponse> {
-        val message = try { bundle.getString(ex.key) } catch (_: Exception) { bundle.getString(defaultKey) }
+    private fun getErrorMessageResponse(ex: HttpException, defaultKey: String = "general.error"): ResponseEntity<ErrorMessageResponse> {
+        val message = try { bundle.getString(ex.key).let { template -> MessageFormat.format(template, *ex.args) } } catch (_: Exception) { bundle.getString(defaultKey) }
         return ResponseEntity(
             ErrorMessageResponse(ex.key, message), ex.httpStatus
         )
