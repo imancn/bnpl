@@ -1,6 +1,6 @@
 package com.iman.bnpl.application.security.service
 
-import com.iman.bnpl.application.advice.InvalidTokenException
+import com.iman.bnpl.application.advice.InvalidCredentialException
 import com.iman.bnpl.domain.user.data.model.UserDetailsImpl
 import com.iman.bnpl.domain.user.data.repository.UserRepository
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -16,7 +16,7 @@ class UserDetailsServiceImpl(
     @Throws(UsernameNotFoundException::class)
     override fun loadUserByUsername(userId: String): UserDetailsImpl {
         return UserDetailsImpl.build(
-            userRepository.findByIdAndDeleted(userId).orElseThrow { InvalidTokenException("User Not Found") }
+            userRepository.findByIdAndDeleted(userId).orElseThrow { InvalidCredentialException() }
         )
     }
 

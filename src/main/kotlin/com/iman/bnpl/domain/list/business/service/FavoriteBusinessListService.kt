@@ -5,7 +5,7 @@ import com.iman.bnpl.actor.http.list.business.payload.FavoriteBusinessListRespon
 import com.iman.bnpl.actor.shared.model.dto.BnplLogoDto
 import com.iman.bnpl.actor.shared.model.dto.ImageDto
 import com.iman.bnpl.application.advice.AccessDeniedException
-import com.iman.bnpl.application.advice.NotFoundException
+import com.iman.bnpl.application.advice.UnprocessableException
 import com.iman.bnpl.application.shared.util.Auth
 import com.iman.bnpl.domain.bnpl.service.BnplService
 import com.iman.bnpl.domain.business.data.repository.BusinessRepository
@@ -70,7 +70,7 @@ class FavoriteBusinessListService(
                     bnplList = bnplService.getBnplsByIds(business.bnplIds).map { BnplLogoDto(it) }
                 )
             }.orElseThrow {
-                throw NotFoundException("Business not found")
+                throw UnprocessableException("Business not found")
             }
         }
     }
@@ -78,7 +78,7 @@ class FavoriteBusinessListService(
     fun addBusinessToList(listId: String, businessId: String) {
         val list = getFavoriteBusinessList(listId)
         if (!businessRepository.existsById(businessId)) {
-            throw NotFoundException("Business not found")
+            throw UnprocessableException("Business not found")
         }
         list.businessIds += businessId
         favoriteBusinessListRepository.save(list)
@@ -87,7 +87,7 @@ class FavoriteBusinessListService(
     fun removeBusinessFromList(listId: String, businessId: String) {
         val list = getFavoriteBusinessList(listId)
         if (!list.businessIds.contains(businessId)) {
-            throw NotFoundException("Business not found in this list")
+            throw UnprocessableException("Business not found in this list")
         }
         list.businessIds -= businessId
         favoriteBusinessListRepository.save(list)
@@ -95,7 +95,7 @@ class FavoriteBusinessListService(
     
     private fun getFavoriteBusinessList(listId: String): FavoriteBusinessListEntity {
         val list = favoriteBusinessListRepository.findById(listId).orElseThrow {
-            throw NotFoundException("Favorite business list not found")
+            throw UnprocessableException("Favorite business list not found")
         }
         if (list.userId != Auth.userId()) {
             throw AccessDeniedException("You don't access to this list")

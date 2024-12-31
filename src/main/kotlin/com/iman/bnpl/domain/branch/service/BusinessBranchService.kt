@@ -3,7 +3,7 @@ package com.iman.bnpl.domain.branch.service
 import com.iman.bnpl.actor.http.branch.payload.BusinessBranchPageResponse
 import com.iman.bnpl.actor.http.branch.payload.BusinessBranchSearchItemResponse
 import com.iman.bnpl.actor.http.branch.payload.BusinessBranchSearchResponse
-import com.iman.bnpl.application.advice.NotFoundException
+import com.iman.bnpl.application.advice.UnprocessableException
 import com.iman.bnpl.domain.bnpl.service.BnplService
 import com.iman.bnpl.domain.branch.data.model.BusinessBranchEntity
 import com.iman.bnpl.domain.branch.data.repository.BusinessBranchRepository
@@ -21,7 +21,7 @@ class BusinessBranchService(
 ) {
     fun searchBusinessBranches(businessId: String, searchTerm: String?, pageable: PageRequest): BusinessBranchSearchResponse {
         val business = businessRepository.findById(businessId).orElseThrow {
-            NotFoundException("Business does not exist")
+            UnprocessableException("Business does not exist")
         }
         val businessBranches = businessBranchRepository.searchBusinessBranches(
             businessId, searchTerm, pageable
@@ -38,7 +38,7 @@ class BusinessBranchService(
     
     fun getBusinessBranches(businessId: String, searchTerm: String?, pageable: PageRequest): Page<BusinessBranchEntity> {
         if (businessRepository.existsById(businessId).not()) {
-            throw NotFoundException("Business does not exist")
+            throw UnprocessableException("Business does not exist")
         }
         return businessBranchRepository.searchBusinessBranches(
             businessId, searchTerm, pageable
@@ -47,10 +47,10 @@ class BusinessBranchService(
     
     fun getBusinessBranchById(businessBranchId: String): BusinessBranchPageResponse? {
         val businessBranch = businessBranchRepository.findById(businessBranchId).orElseThrow {
-            NotFoundException("Business Branch does not exist")
+            UnprocessableException("Business Branch does not exist")
         }
         val business = businessRepository.findById(businessBranch.businessId).orElseThrow {
-            NotFoundException("Business does not exist")
+            UnprocessableException("Business does not exist")
         }
         val bnplList = bnplService.getBnplsByIds(business.bnplIds)
         val otherBranches = getBusinessBranches(

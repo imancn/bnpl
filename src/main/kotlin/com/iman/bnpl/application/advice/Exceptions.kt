@@ -2,22 +2,14 @@ package com.iman.bnpl.application.advice
 
 import org.springframework.http.HttpStatus
 
-open class HttpException(val httpStatus: HttpStatus, override val message: String?) : RuntimeException(message)
+sealed class HttpException(val httpStatus: HttpStatus, val key: String): RuntimeException()
 
-class RefreshTokenException(message: String?) : HttpException(HttpStatus.UNAUTHORIZED, message)
+class InvalidCredentialException(key: String = "invalid.credentials") : HttpException(HttpStatus.UNAUTHORIZED, key)
 
-class InvalidTokenException(message: String?) : HttpException(HttpStatus.UNAUTHORIZED, message)
+class AccessDeniedException(key: String = "access.denied") : HttpException(HttpStatus.FORBIDDEN, key)
 
-class InvalidInputException(message: String?) : HttpException(HttpStatus.BAD_REQUEST, message)
+class InvalidInputException(key: String = "invalid.input") : HttpException(HttpStatus.BAD_REQUEST, key)
 
-class NotFoundException(message: String?) : HttpException(HttpStatus.NOT_FOUND, message)
+class UnprocessableException(key: String = "unprocessable"): HttpException(HttpStatus.UNPROCESSABLE_ENTITY, key)
 
-class EmailNotSentException(message: String?) : HttpException(HttpStatus.INTERNAL_SERVER_ERROR, message)
-
-class FileException(message: String?) : HttpException(HttpStatus.INTERNAL_SERVER_ERROR, message)
-
-class LogicalException(message: String?): RuntimeException(message)
-
-class UnprocessableException(message: String?): HttpException(HttpStatus.UNPROCESSABLE_ENTITY, message)
-
-class AccessDeniedException(message: String?) : HttpException(HttpStatus.FORBIDDEN, message)
+class InternalServerError(key: String = "internal.server.error") : HttpException(HttpStatus.INTERNAL_SERVER_ERROR, key)

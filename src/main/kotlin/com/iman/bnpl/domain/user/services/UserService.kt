@@ -2,7 +2,7 @@ package com.iman.bnpl.domain.user.services
 
 import com.iman.bnpl.actor.http.user.payload.UpdateUserProfileRequest
 import com.iman.bnpl.application.advice.InvalidInputException
-import com.iman.bnpl.application.advice.NotFoundException
+import com.iman.bnpl.application.advice.UnprocessableException
 import com.iman.bnpl.application.shared.util.Auth
 import com.iman.bnpl.domain.user.data.model.Role
 import com.iman.bnpl.domain.user.data.model.UserEntity
@@ -22,7 +22,7 @@ class UserService(
     
     fun getUserById(userId: String): UserEntity {
         return repository.findById(userId).orElseThrow {
-            NotFoundException("User not found")
+            UnprocessableException("User not found")
         }
     }
     

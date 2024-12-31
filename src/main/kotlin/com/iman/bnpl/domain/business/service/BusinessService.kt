@@ -3,7 +3,7 @@ package com.iman.bnpl.domain.business.service
 import com.iman.bnpl.actor.http.business.payload.response.BusinessPageResponse
 import com.iman.bnpl.actor.http.business.payload.response.BusinessSearchItemResponse
 import com.iman.bnpl.actor.http.business.payload.response.BusinessSearchResponse
-import com.iman.bnpl.application.advice.NotFoundException
+import com.iman.bnpl.application.advice.UnprocessableException
 import com.iman.bnpl.application.shared.enums.BusinessMode
 import com.iman.bnpl.application.shared.enums.BusinessCategory
 import com.iman.bnpl.domain.bnpl.service.BnplService
@@ -50,7 +50,7 @@ class BusinessService(
 
     fun getBusinessById(businessId: String): BusinessPageResponse {
         val business = businessRepository.findById(businessId).orElseThrow {
-            NotFoundException("Business does not exist")
+            UnprocessableException("Business does not exist")
         }
         val bnplList = bnplService.getBnplsByIds(business.bnplIds)
         val businessBranches = businessBranchRepository.searchBusinessBranches(

@@ -27,7 +27,7 @@ class AuthService(
         password: String
     ): JwtResponse {
         val user = userService.getUserByPhoneNumber(phoneNumber.validatePhoneNumber()).orElseThrow {
-            AccessDeniedException("Invalid credentials")
+            InvalidCredentialException()
         }
         val authentication = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(user.id, password)
@@ -84,7 +84,7 @@ class AuthService(
             refreshTokenService.deleteById(refreshToken)
             RefreshTokenResponse(token, newRefreshToken.id ?: "")
         }.orElseThrow {
-            RefreshTokenException("Your Session has been expired")
+            UnprocessableException("Your Session has been expired")
         }
     }
     

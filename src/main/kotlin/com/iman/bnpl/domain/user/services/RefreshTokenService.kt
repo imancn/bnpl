@@ -1,6 +1,6 @@
 package com.iman.bnpl.domain.user.services
 
-import com.iman.bnpl.application.advice.NotFoundException
+import com.iman.bnpl.application.advice.UnprocessableException
 import com.iman.bnpl.domain.user.data.model.RefreshTokenEntity
 import com.iman.bnpl.domain.user.data.repository.RefreshTokenRepository
 import com.iman.bnpl.domain.user.data.repository.UserRepository
@@ -31,7 +31,7 @@ class RefreshTokenService(
     }
 
     fun deleteByUserId(userId: String) {
-        if (!userRepository.existsByIdAndDeleted(userId)) { throw NotFoundException("User Not Found") }
+        if (!userRepository.existsByIdAndDeleted(userId)) { throw UnprocessableException("User Not Found") }
         refreshTokenRepository.deleteByUserId(userId)
     }
     
