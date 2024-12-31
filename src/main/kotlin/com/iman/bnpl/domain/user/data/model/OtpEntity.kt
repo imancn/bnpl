@@ -6,9 +6,9 @@ import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
 
-@Document(collection = "otp_tokens")
-@TypeAlias("otp_tokens")
-data class OtpTokenEntity(
+@Document(collection = "otp")
+@TypeAlias("otp")
+data class OtpEntity(
     @Id
     var id: String?,
     var userId: String,

@@ -19,4 +19,8 @@ class SmsService(
         
         smsClient.sendSms(apiKey, request)
     }
+    
+    fun sendResetPasswordCodeSms(token: String, phoneNumber: String) {
+        TODO("Not yet implemented")
+    }
 }

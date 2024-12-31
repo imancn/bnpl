@@ -5,6 +5,7 @@ import com.iman.bnpl.actor.http.user.payload.response.RefreshTokenResponse
 import com.iman.bnpl.application.advice.*
 import com.iman.bnpl.application.security.service.JwtService
 import com.iman.bnpl.application.shared.util.Auth
+import com.iman.bnpl.domain.user.data.model.OtpType
 import com.iman.bnpl.domain.user.data.model.UserDetailsImpl
 import com.iman.bnpl.domain.user.data.model.UserEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -17,7 +18,7 @@ import kotlin.jvm.optionals.getOrElse
 @Service
 class AuthService(
     private val userService: UserService,
-    private val otpTokenService: OtpTokenService,
+    private val otpService: OtpService,
     private val jwtService: JwtService,
     private val refreshTokenService: RefreshTokenService,
     private val authenticationManager: AuthenticationManager,
@@ -48,7 +49,7 @@ class AuthService(
         val user = userService.getUserByPhoneNumber(phoneNumber.validatePhoneNumber()).orElseThrow {
             UnprocessableException("You are not registered")
         }
-        otpTokenService.validateOtpTokenForLogin(user.id ?: "", otp)
+        otpService.validateOtpTokenForLogin(user.id ?: "", otp, OtpType.LOGIN)
         val userDetails = UserDetailsImpl(
             user.id ?: "",
             user.phoneNumber,
@@ -67,13 +68,13 @@ class AuthService(
         val user = userService.getUserByPhoneNumber(phoneNumber.validatePhoneNumber()).getOrElse {
             userService.registerUser(phoneNumber, fullName ?: phoneNumber, password)
         }
-        otpTokenService.sendOtp(user.id ?: "", phoneNumber.validatePhoneNumber())
+        otpService.sendLoginOtp(user.id ?: "", phoneNumber.validatePhoneNumber())
         return user
     }
     
     fun registerUser(phoneNumber: String, fullName: String? = null, password: String? = null): UserEntity {
         val user = userService.registerUser(phoneNumber.validatePhoneNumber(), fullName ?: phoneNumber, password)
-        otpTokenService.sendOtp(user.id ?: "", phoneNumber.validatePhoneNumber())
+        otpService.sendLoginOtp(user.id ?: "", phoneNumber.validatePhoneNumber())
         return user
     }
     
