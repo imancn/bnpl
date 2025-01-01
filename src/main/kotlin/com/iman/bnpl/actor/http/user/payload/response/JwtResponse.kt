@@ -4,6 +4,8 @@ data class JwtResponse(
     var accessToken: String,
     var refreshToken: String,
     var phoneNumber: String?,
+    var firstName: String?,
+    var lastName: String?
 ) {
     var tokenType = "Bearer"
 }

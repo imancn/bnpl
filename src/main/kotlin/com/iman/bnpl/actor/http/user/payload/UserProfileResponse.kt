@@ -1,6 +1,7 @@
 package com.iman.bnpl.actor.http.user.payload
 
 class UserProfileResponse(
-    var fullName: String,
+    var firstName: String?,
+    var lastName: String?,
     var phoneNumber: String
 )

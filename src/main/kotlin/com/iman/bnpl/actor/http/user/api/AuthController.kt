@@ -55,7 +55,11 @@ class AuthController(
     fun registerStudent(
         @RequestParam(required = false)
         @NotBlank(message = "Name is blank")
-        fullName: String,
+        firstName: String,
+        
+        @RequestParam(required = false)
+        @NotBlank(message = "Name is blank")
+        lastName: String,
         
         @RequestParam(required = false)
         @NotBlank(message = "Phone number is blank")
@@ -66,7 +70,7 @@ class AuthController(
         @NotBlank(message = "Password is blank")
         password: String,
     ) {
-        authService.registerUser(phoneNumber, fullName, password)
+        authService.registerUser(phoneNumber, firstName, lastName, password)
     }
     
     @PostMapping("/refresh-token")

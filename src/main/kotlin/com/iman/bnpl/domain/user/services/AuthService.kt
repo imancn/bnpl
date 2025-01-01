@@ -38,7 +38,7 @@ class AuthService(
         val userDetails = authentication.principal as UserDetailsImpl
         val refreshToken = refreshTokenService.createRefreshToken(userDetails.id)
         return JwtResponse(
-            jwt, refreshToken.id ?: "", userDetails.phoneNumber
+            jwt, refreshToken.id ?: "", userDetails.phoneNumber, user.firstName, user.lastName
         )
     }
     
@@ -60,20 +60,20 @@ class AuthService(
         val jwt = jwtService.generateJwtToken(userDetails)
         val refreshToken = refreshTokenService.createRefreshToken(userDetails.id)
         return JwtResponse(
-            jwt, refreshToken.id ?: "", userDetails.phoneNumber
+            jwt, refreshToken.id ?: "", userDetails.phoneNumber, user.firstName, user.lastName
         )
     }
     
-    fun loginOrRegisterUser(phoneNumber: String, fullName: String? = null, password: String? = null): UserEntity {
+    fun loginOrRegisterUser(phoneNumber: String, firstName: String? = null, lastName: String? = null, password: String? = null): UserEntity {
         val user = userService.getUserByPhoneNumber(phoneNumber.validatePhoneNumber()).getOrElse {
-            userService.registerUser(phoneNumber, fullName ?: phoneNumber, password)
+            userService.registerUser(phoneNumber, firstName, lastName, password)
         }
         otpService.sendLoginOtp(user.id ?: "", phoneNumber.validatePhoneNumber())
         return user
     }
     
-    fun registerUser(phoneNumber: String, fullName: String? = null, password: String? = null): UserEntity {
-        val user = userService.registerUser(phoneNumber.validatePhoneNumber(), fullName ?: phoneNumber, password)
+    fun registerUser(phoneNumber: String, firstName: String? = null, lastName: String? = null, password: String? = null): UserEntity {
+        val user = userService.registerUser(phoneNumber.validatePhoneNumber(), firstName, lastName, password)
         otpService.sendLoginOtp(user.id ?: "", phoneNumber.validatePhoneNumber())
         return user
     }

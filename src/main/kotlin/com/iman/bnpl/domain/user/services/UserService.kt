@@ -28,15 +28,17 @@ class UserService(
     
     fun updateUserProfile(request: UpdateUserProfileRequest): UserEntity {
         val user = getUserById(Auth.userId())
-        user.fullName = request.fullName
+        user.firstName = request.firstName
+        user.lastName = request.lastName
         return repository.save(user)
     }
     
-    fun registerUser(phoneNumber: String, fullName: String, password: String?): UserEntity {
+    fun registerUser(phoneNumber: String, firstName: String?, lastName: String?, password: String?): UserEntity {
         return repository.save(
             UserEntity(
                 id = null,
-                fullName = fullName,
+                firstName = firstName,
+                lastName = lastName,
                 phoneNumber = phoneNumber,
                 password = password?.let { encoder.encode(it) },
                 roles = setOf(Role.ROLE_CUSTOMER)

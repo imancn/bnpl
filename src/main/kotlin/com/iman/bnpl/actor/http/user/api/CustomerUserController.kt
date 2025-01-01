@@ -18,7 +18,8 @@ class CustomerUserController(
     fun getUserProfile(): UserProfileResponse {
         return userService.getUserById(Auth.userId()).let {
             UserProfileResponse(
-                it.fullName,
+                it.firstName,
+                it.lastName,
                 it.phoneNumber,
             )
         }
@@ -30,7 +31,8 @@ class CustomerUserController(
     ): UserProfileResponse {
         return userService.updateUserProfile(request).let {
             UserProfileResponse(
-                it.fullName,
+                it.firstName,
+                it.lastName,
                 it.phoneNumber,
             )
         }
