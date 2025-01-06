@@ -35,12 +35,12 @@ class ControllerAdviceHttp(
     @ExceptionHandler(value = [InternalServerError::class])
     fun handleInternalServerError(ex: InternalServerError, request: WebRequest): ResponseEntity<ErrorMessageResponse> {
         logger.error(ex.stackTraceToString(), ex.message)
-        return getErrorMessageResponse(ex, "unprocessable")
+        return getErrorMessageResponse(ex, "internal.server.error")
     }
     
     @ExceptionHandler(value = [UnprocessableException::class])
     fun handleUnprocessableEntityException(ex: UnprocessableException, request: WebRequest): ResponseEntity<ErrorMessageResponse> {
-        return getErrorMessageResponse(ex, "internal.server.error")
+        return getErrorMessageResponse(ex, "unprocessable")
     }
     
     private fun getErrorMessageResponse(ex: HttpException, defaultKey: String = "general.error"): ResponseEntity<ErrorMessageResponse> {
